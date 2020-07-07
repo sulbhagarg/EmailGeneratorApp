@@ -23,7 +23,7 @@ public class EncryptionDecryption {
 		this.password = password;
 		if(n==1) {
 			this.encryptedPassword = encrypt(this.password);
-		}
+		} 
 		else {
 			this.decryptedPassword = decrypt(this.password);
 		}

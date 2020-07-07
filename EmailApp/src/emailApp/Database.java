@@ -1,5 +1,11 @@
 package emailApp;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.sql.*;
 
 public class Database {
@@ -11,6 +17,7 @@ public class Database {
 	private String contact;
 	private int id;
 	private String companySuffix = "xyzcompany.com";
+	private String company = "xyz";
 	String url="jdbc:mysql://localhost:3306/";
 	String user="root";
 	String sqlPassword="";
@@ -32,12 +39,14 @@ public class Database {
 		email = firstName.toLowerCase() + lastName.toLowerCase() + uniNo + "@" + department.toLowerCase() + "." + companySuffix;
 		
 		insertData();
+		
+		sendPassword(this.password);
 	}
 	
 	// Connect database
 	private int connectDb() {
 		try {
-			d=new com.mysql.cj.jdbc.Driver();
+			d = new com.mysql.cj.jdbc.Driver();
 			con = DriverManager.getConnection(url, user, sqlPassword);
 			
 			Statement stat = con.createStatement();
@@ -63,7 +72,10 @@ public class Database {
 			String countQuery = "SELECT COUNT(id) FROM email";
 			ResultSet rs = stat.executeQuery(countQuery);
 			rs.next();
-			return rs.getInt(1);
+			int id = rs.getInt(1);
+			rs.close();
+			stat.close();
+			return id;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -82,8 +94,39 @@ public class Database {
 			preparedStatement.setString(5, this.email);
 			preparedStatement.setString(6, this.password);
 			preparedStatement.execute();
+			preparedStatement.close();
+//			con.close();
 		}
 		catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	// Send Password as SMS
+	private void sendPassword(String password) {
+		EncryptionDecryption ed = new EncryptionDecryption(password, 2);
+		String decryptedPassword = ed.getDecryptedPassword();
+		try {
+			String apiKey = "apiKey=" + "your apiKey here";
+			String message = "&message=" + URLEncoder.encode("Your password for " + company + " is: " + decryptedPassword, "UTF-8");
+			String number = "&numbers=" + contact;
+			String apiUrl = "https://api.textlocal.in/send/?" + apiKey + message + number;
+			
+			URL url = new URL(apiUrl);
+			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+			connection.setDoOutput(true);
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			
+			String line = "";
+			StringBuilder sb = new StringBuilder();
+			
+			while( (line = reader.readLine()) != null ) {
+				sb.append(line).append("\n");
+			}
+			
+			System.out.println(sb.toString());
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
