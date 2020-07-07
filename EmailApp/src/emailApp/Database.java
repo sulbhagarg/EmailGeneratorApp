@@ -107,7 +107,7 @@ public class Database {
 		EncryptionDecryption ed = new EncryptionDecryption(password, 2);
 		String decryptedPassword = ed.getDecryptedPassword();
 		try {
-			String apiKey = "apiKey=" + "your apiKey here";
+			String apiKey = "apiKey=" + "vDeVECPbj6o-Uak9FncUHeHLDWLV3Sbx3JmQ5OKplN";
 			String message = "&message=" + URLEncoder.encode("Your password for " + company + " is: " + decryptedPassword, "UTF-8");
 			String number = "&numbers=" + contact;
 			String apiUrl = "https://api.textlocal.in/send/?" + apiKey + message + number;
