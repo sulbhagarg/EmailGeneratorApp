@@ -5,4 +5,4 @@ It generates email and password for the employees of an organization based on th
 
 ## Requirements:
 * Sql Server
-** Here I have used Xampp server for the same
+- Here I have used Xampp server for the same
