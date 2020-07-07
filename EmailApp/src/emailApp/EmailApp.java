@@ -87,7 +87,7 @@ public class EmailApp {
 					String firstName = tfFisrtName.getText().toString().trim();
 					String lastName = tfLastName.getText().toString().trim();
 					String depChoice = cbDepartment.getSelectedItem().toString().trim();
-					String contact = tfContact.getText().toString().trim();
+					String contact = tfLastName.getText().toString().trim();
 					Email email = new Email(firstName, lastName,depChoice, contact);
 					JOptionPane.showMessageDialog(null, email.showInfo());
 				}
