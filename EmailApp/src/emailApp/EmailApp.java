@@ -10,7 +10,7 @@ import javax.swing.*;
 public class EmailApp {
 
 	private JFrame frame;
-	private JTextField tfFisrtName;
+	private JTextField tfFirstName;
 	private JTextField tfLastName;
 	private JTextField tfContact;
 	
@@ -44,11 +44,11 @@ public class EmailApp {
 		frame.getContentPane().setBackground(Color.LIGHT_GRAY);
 		frame.getContentPane().setLayout(null);
 		
-		tfFisrtName = new JTextField();
-		tfFisrtName.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		tfFisrtName.setBounds(120, 10, 318, 19);
-		frame.getContentPane().add(tfFisrtName);
-		tfFisrtName.setColumns(10);
+		tfFirstName = new JTextField();
+		tfFirstName.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		tfFirstName.setBounds(120, 10, 318, 19);
+		frame.getContentPane().add(tfFirstName);
+		tfFirstName.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("First Name");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
@@ -78,25 +78,6 @@ public class EmailApp {
 		cbDepartment.setBounds(120, 67, 318, 21);
 		frame.getContentPane().add(cbDepartment);
 		
-		JButton btnGenerateEmail = new JButton("Generate Email");
-		btnGenerateEmail.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(tfFisrtName.getText().toString().isEmpty() || tfLastName.getText().toString().isEmpty() || tfContact.getText().toString().isEmpty())
-					JOptionPane.showMessageDialog(null, "Please Enter All the Required Fields!!");
-				else {
-					String firstName = tfFisrtName.getText().toString().trim();
-					String lastName = tfLastName.getText().toString().trim();
-					String depChoice = cbDepartment.getSelectedItem().toString().trim();
-					String contact = tfLastName.getText().toString().trim();
-					Email email = new Email(firstName, lastName,depChoice, contact);
-					JOptionPane.showMessageDialog(null, email.showInfo());
-				}
-			}
-		});
-		btnGenerateEmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		btnGenerateEmail.setBounds(10, 125, 428, 28);
-		frame.getContentPane().add(btnGenerateEmail);
-		
 		JLabel lblContactNo = new JLabel("Contact No");
 		lblContactNo.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblContactNo.setBounds(10, 97, 100, 13);
@@ -108,6 +89,33 @@ public class EmailApp {
 		frame.getContentPane().add(tfContact);
 		tfContact.setColumns(10);
 		frame.setBounds(100, 100, 459, 197);
+		
+		JButton btnGenerateEmail = new JButton("Generate Email");
+		btnGenerateEmail.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(tfFirstName.getText().toString().isEmpty() || tfLastName.getText().toString().isEmpty() || tfContact.getText().toString().isEmpty())
+					JOptionPane.showMessageDialog(null, "Please Enter All the Required Fields!!");
+				else {
+					String firstName = tfFirstName.getText().toString().trim();
+					String lastName = tfLastName.getText().toString().trim();
+					String depChoice = cbDepartment.getSelectedItem().toString().trim();
+					String contact = tfContact.getText().toString().trim();
+					Email email = new Email(firstName, lastName,depChoice, contact);
+					JOptionPane.showMessageDialog(frame, email.showInfo());
+					int returnValue = JOptionPane.OK_OPTION;
+//					System.out.println(returnValue);
+					if(returnValue==0) {
+						tfFirstName.setText("");
+						tfLastName.setText("");
+						tfContact.setText("");
+						cbDepartment.setSelectedIndex(0);
+					}
+				}
+			}
+		});
+		btnGenerateEmail.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		btnGenerateEmail.setBounds(10, 125, 428, 28);
+		frame.getContentPane().add(btnGenerateEmail);
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
