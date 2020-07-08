@@ -1,11 +1,5 @@
 package emailApp;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.sql.*;
 
 public class Database {
@@ -15,36 +9,29 @@ public class Database {
 	private String department;
 	private String email;
 	private String contact;
-	private int id;
-	private String companySuffix = "xyzcompany.com";
-	private String company = "xyz";
 	String url="jdbc:mysql://localhost:3306/";
 	String user="root";
 	String sqlPassword="";
 	java.sql.Driver d;
 	Connection con;
 	
-	public Database(String firstName, String lastName, String department, String contact, String password) {
+	public Database() {
+		connectDb();
+	}
+	
+	public void dataBase(String firstName, String lastName, String department, String contact, String password, String email) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.password = password;
 		this.department = department;
 		this.contact = contact;
-		
-		id = connectDb();
-		id = id + 101;
-		String uniNo = Integer.toString(id);
-		
-		// Combine elements to generate email
-		email = firstName.toLowerCase() + lastName.toLowerCase() + uniNo + "@" + department.toLowerCase() + "." + companySuffix;
-		
+		this.email= email;
+
 		insertData();
-		
-		sendPassword(this.password);
 	}
 	
 	// Connect database
-	private int connectDb() {
+	private void connectDb() {
 		try {
 			d = new com.mysql.cj.jdbc.Driver();
 			con = DriverManager.getConnection(url, user, sqlPassword);
@@ -68,18 +55,10 @@ public class Database {
 					"PRIMARY KEY(id)" +
 					")");
 			
-			// Get count
-			String countQuery = "SELECT COUNT(id) FROM email";
-			ResultSet rs = stat.executeQuery(countQuery);
-			rs.next();
-			int id = rs.getInt(1);
-			rs.close();
 			stat.close();
-			return id;
 		} catch(Exception e) {
 			e.printStackTrace();
 		}
-		return -1;
 	}
 	
 	// Insert Data
@@ -102,36 +81,19 @@ public class Database {
 		}
 	}
 	
-	// Send Password as SMS
-	private void sendPassword(String password) {
-		EncryptionDecryption ed = new EncryptionDecryption(password, 2);
-		String decryptedPassword = ed.getDecryptedPassword();
+	public int getRowCount() {
 		try {
-			String apiKey = "apiKey=" + "your apiKey goes here";
-			String message = "&message=" + URLEncoder.encode("Your password for " + company + " is: " + decryptedPassword, "UTF-8");
-			String number = "&numbers=" + contact;
-			String apiUrl = "https://api.textlocal.in/send/?" + apiKey + message + number;
-			
-			URL url = new URL(apiUrl);
-			HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-			connection.setDoOutput(true);
-			
-			BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			
-			String line = "";
-			StringBuilder sb = new StringBuilder();
-			
-			while( (line = reader.readLine()) != null ) {
-				sb.append(line).append("\n");
-			}
-			
-			System.out.println(sb.toString());
-		} catch(Exception e) {
+			Statement stat = con.createStatement();
+			String countQuery = "SELECT COUNT(id) FROM email";
+			ResultSet rs = stat.executeQuery(countQuery);
+			rs.next();
+			int count = rs.getInt(1);
+			rs.close();
+			return count;
+		}
+		catch(Exception e) {
 			e.printStackTrace();
 		}
-	}
-	
-	public String getEmail() {
-		return this.email;
+		return 0;
 	}
 }

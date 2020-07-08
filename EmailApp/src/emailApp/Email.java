@@ -1,5 +1,7 @@
 package emailApp;
 
+import javax.swing.JOptionPane;
+
 public class Email {
 	private String firstName;
 	private String lastName;
@@ -7,7 +9,10 @@ public class Email {
 	private String department;
 	private String email;
 	private String contact;
+	private String company="xyz";
+	private String companySuffix = "xyzcompany.com";
 	private int defaultPasswordLength = 10;
+	private Database db;
 	
 	// Constructor to receive first and last name
 	public Email(String firstName, String lastName, String depChoice, String contact) {
@@ -19,8 +24,17 @@ public class Email {
 		// Call a method that returns a random password
 		this.password = randomPassword(defaultPasswordLength);
 		
-		Database db = new Database(this.firstName, this.lastName, this.department, this.contact, this.password);
-		this.email = db.getEmail();
+		db = new Database();
+		int count = db.getRowCount();
+		String count1 = Integer.toString(count);
+		email = firstName.toLowerCase() + lastName.toLowerCase() + count1 + "@" + department.toLowerCase() + companySuffix;
+		
+		db.dataBase(this.firstName, this.lastName, this.department, this.contact, this.password, this.email);
+		
+		SendPassword sp = new SendPassword(this.password, this.contact, company);
+		if(!sp.sendPassword()) {
+			JOptionPane.showMessageDialog(null, "Some error Occurred Password Not Sent", "Error", JOptionPane.WARNING_MESSAGE);
+		}
 	}
 	
 		
