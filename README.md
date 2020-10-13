@@ -13,5 +13,5 @@ It generates email and password for the employees of an organization based on th
 * Clone this repository
 * Open in the IDE
 * Enter your APIKEY generated from https://www.textlocal.in/ (You will get 10 free SMS)
-* Change the database setup configurations according to your loacl server.
+* Change the database setup configurations according to your local server.
 * Click Run. Tadaaa, your own company email generation is running :) !!
